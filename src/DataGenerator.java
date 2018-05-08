@@ -83,7 +83,7 @@ public class DataGenerator {
                     hairColorAtt = hairColor.split("\\s");
                 }
 
-                noseShape = "noseShape flrshy turnedUp hawk roman greek\n";
+                noseShape = "noseShape fleshy turnedUp hawk roman greek\n";
                 configWriter.write(noseShape);
                 for (int j = 0; j < noseShapeAtt.length; j++) {
                     noseShapeAtt = noseShape.split("\\s");
