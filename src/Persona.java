@@ -1,7 +1,7 @@
 
 public class Persona {
 
-    private static String name, hairLength, glasses, facialHair, eyeColor, pimples, hat, hairColor, noseShape,
+    public String name, hairLength, glasses, facialHair, eyeColor, pimples, hat, hairColor, noseShape,
             faceShape;
 
     public Persona(String name, String hairLength, String glasses, String facialHair, String eyeColor, String pimples,
