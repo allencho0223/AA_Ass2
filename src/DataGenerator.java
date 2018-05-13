@@ -9,7 +9,7 @@ public class DataGenerator {
 
         BufferedWriter configWriter = null;
         String hairLength = "";
-        String[] hairLengthAtt = new String[9];
+        String[] hairLengthAtt = new String[5];
 
         String glasses = "";
         String[] glassesAtt = new String[5];
@@ -40,7 +40,7 @@ public class DataGenerator {
             for (int i = 1; i <= 5; i++) {
                 configWriter = new BufferedWriter(new FileWriter("game" + i + ".config"));
 
-                hairLength = "hairLength black white yellow blue red purple brown grey\n";
+                hairLength = "hairLength none short medium long\n";
                 configWriter.write(hairLength);
 
                 for (int j = 0; j < hairLengthAtt.length; j++) {
@@ -101,7 +101,7 @@ public class DataGenerator {
 
                     configWriter.write("hairLength " + hairLengthAtt[r.nextInt(hairLengthAtt.length - 1) + 1] + "\n");
                     configWriter.write("glasses " + glassesAtt[r.nextInt(glassesAtt.length - 1) + 1] + "\n");
-                    configWriter.write("facialHar " + facialHairAtt[r.nextInt(facialHairAtt.length - 1) + 1] + "\n");
+                    configWriter.write("facialHair " + facialHairAtt[r.nextInt(facialHairAtt.length - 1) + 1] + "\n");
                     configWriter.write("eyeColor " + eyeColorAtt[r.nextInt(eyeColorAtt.length - 1) + 1] + "\n");
                     configWriter.write("pimples " + pimplesAtt[r.nextInt(pimplesAtt.length - 1) + 1] + "\n");
                     configWriter.write("hat " + hatAtt[r.nextInt(hatAtt.length - 1) + 1] + "\n");

@@ -1,7 +1,9 @@
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -12,12 +14,10 @@ import java.util.Random;
  */
 public class RandomGuessPlayer implements Player {
 
-    public Persona[] personas = null;
-    public List<Persona> personaList;
-    public Persona chosenPersona = null;
-    public Config config = new Config();
+    public Config c = new Config();
     public Random r = new Random();
     public int alivePersona = 0;
+    public String chosenPersona = "";
 
     /**
      * Loads the game configuration from gameFilename, and also store the chosen
@@ -33,22 +33,30 @@ public class RandomGuessPlayer implements Player {
      *             IOException" method specification, but make sure your
      *             implementation exits gracefully if an IOException is thrown.
      */
+    @SuppressWarnings("static-access")
     public RandomGuessPlayer(String gameFilename, String chosenName) throws IOException {
-        // Load and assign data into persona primitive array
-        personas = config.configFileLoader(gameFilename);
 
-        // Ascertain if chosenName exists in the persona list
-        for (int i = 0; i < personas.length; i++) {
-            if ((personas[i].identifyPersona("name").contains(chosenName))) {
-                chosenPersona = personas[i];
+        c.configFileLoader(gameFilename);
+
+        for (String name : c.persona.keySet()) {
+            if (name.equals(chosenName)) {
+                chosenPersona = name;
+                break;
             }
         }
 
-        personaList = new ArrayList<Persona>(Arrays.asList(personas));
+        if (chosenPersona == null) {
+            System.out.println("Invalid player name - Not selected!");
+            return;
+        } else {
+            System.out.println("chosen persona: " + chosenPersona);
+        }
 
-        alivePersona = personas.length;
+        alivePersona = c.persona.size();
+
     } // end of RandomGuessPlayer()
 
+    @SuppressWarnings("static-access")
     public Guess guess() {
 
         // Make a guess
@@ -76,20 +84,25 @@ public class RandomGuessPlayer implements Player {
 
             guessAttribute = "";
 
-            guessValue = personas[r.nextInt(personas.length)].name;
+            List<String> keys = new ArrayList<String>(c.persona.keySet());
+
+            // Persona's name - random
+            guessValue = keys.get(r.nextInt(keys.size()));
 
         } else {
             /**
              * Else - guess type is attribute: attribute == the attribute of persona value
              * == value corresponding to the attribute
              */
-            guessAttribute = config.attributeList.get(r.nextInt(config.attributeList.size()));
+            guessAttribute = c.attributeList.get(r.nextInt(c.attributeList.size()));
 
-            for (String value : config.attValSet.get(guessAttribute)) {
-                tempValues.add(value);
+            for (HashMap.Entry<String, ArrayList<String>> entry : c.attValSet.entrySet()) {
+                if (entry.getKey().equals(guessAttribute)) {
+                    tempValues = entry.getValue();
+                }
             }
 
-            guessValue = config.attValSet.get(guessAttribute).get(r.nextInt(tempValues.size()));
+            guessValue = tempValues.get(r.nextInt(tempValues.size()));
 
         }
 
@@ -97,15 +110,16 @@ public class RandomGuessPlayer implements Player {
 
     } // end of guess()
 
+    @SuppressWarnings("static-access")
     public boolean answer(Guess currGuess) {
 
-        String chosenValue = "";
-        int isRemoved = 0;
+        int isDead = 0;
+
         // If mType == Person
         if (currGuess.getType() == Guess.GuessType.Person) {
 
             // Compare value with chosen person's name
-            if (chosenPersona.name == currGuess.getValue()) {
+            if (chosenPersona == currGuess.getValue()) {
                 return true;
             }
             return false;
@@ -114,16 +128,39 @@ public class RandomGuessPlayer implements Player {
         } else {
 
             // Check how many personas have the value
-            for (int i = 0; i < personas.length; i++) {
-                // Check how many personas have the value corresponding to the attribute
-                chosenValue = personas[i].identifyPersona(currGuess.getAttribute());
-                if (chosenValue == currGuess.getValue()) {
-                    personaList.remove(i--);
-                    alivePersona--;
-                    isRemoved++;
+
+            ArrayList<String> deadPersona = new ArrayList<String>();
+
+            for (HashMap.Entry<String, HashMap<String, String>> entry : c.persona.entrySet()) {
+                System.out.println("getAtt: " + entry.getValue().containsKey(currGuess.getAttribute()));
+                System.out.println("getVal: " + entry.getValue().containsValue(currGuess.getValue()));
+                if (entry.getValue().containsKey(currGuess.getAttribute())
+                        && entry.getValue().containsValue(currGuess.getValue())) {
+                    deadPersona.add(entry.getKey());
                 }
             }
-            if (isRemoved > 0) {
+
+            for (int i = 0; i < deadPersona.size(); i++) {
+                System.out.println("dead persona: " + deadPersona.get(i));
+            }
+
+            for (Iterator<Map.Entry<String, HashMap<String, String>>> it = c.persona.entrySet().iterator(); it.hasNext();) {
+                Map.Entry<String, HashMap<String, String>> entry = it.next();
+                for (int i = 0; i < deadPersona.size(); i++) {
+                    if (entry.getKey().equals(deadPersona.get(i))) {
+                        it.remove();
+                        isDead++;
+                    }
+                }
+            }
+
+            System.out.println("Alive persona: " + c.persona.size());
+            
+            for (Map.Entry<String, HashMap<String, String>> alivePersona : c.persona.entrySet()) {
+                System.out.println("alive persona: " + alivePersona.getKey());
+            }
+            System.out.println();
+            if (isDead > 0) {
                 return true;
             } else {
                 return false;
@@ -132,8 +169,8 @@ public class RandomGuessPlayer implements Player {
     } // end of answer()
 
     public boolean receiveAnswer(Guess currGuess, boolean answer) {
-        
-        if (currGuess.getValue() == chosenPersona.name) {
+
+        if (currGuess.getValue() == chosenPersona) {
             answer = true;
         } else {
             answer = false;
