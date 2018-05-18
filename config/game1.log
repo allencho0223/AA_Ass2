@@ -1,0 +1,11 @@
+Round 1
+Player 1 guessing Person  P18
+Player 2 answering false
+Player 2 guessing Attribute eyeColor green
+Player 1 answering false
+Round 2
+Player 1 guessing Person  P3
+Player 2 answering false
+Player 2 guessing Person  P3
+Player 1 answering true
+Player 2 won!

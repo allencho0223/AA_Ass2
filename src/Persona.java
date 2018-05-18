@@ -1,47 +1,29 @@
+import java.util.*;
 
 public class Persona {
+    
+    private String name = "";
+    private LinkedHashMap<String, String> personaAttValSet = new LinkedHashMap<String, String>();
+    
+    public Persona(String name, LinkedHashMap<String, String> personaAttValSet) {
+        this.setName(name);
+        this.setPersonaAttValSet(personaAttValSet);
+    }
 
-    public String name, hairLength, glasses, facialHair, eyeColor, pimples, hat, hairColor, noseShape,
-            faceShape;
+    public String getName() {
+        return name;
+    }
 
-    public Persona(String name, String hairLength, String glasses, String facialHair, String eyeColor, String pimples,
-            String hat, String hairColor, String noseShape, String faceShape) {
+    public void setName(String name) {
         this.name = name;
-        this.hairLength = hairLength;
-        this.glasses = glasses;
-        this.facialHair = facialHair;
-        this.eyeColor = eyeColor;
-        this.pimples = pimples;
-        this.hat = hat;
-        this.hairColor = hairColor;
-        this.noseShape = noseShape;
-        this.faceShape = faceShape;
     }
 
-    public String identifyPersona(String att) {
-        switch (att) {
-        case "name":
-            return name;
-        case "hairLength":
-            return hairLength;
-        case "glasses":
-            return glasses;
-        case "facialHair":
-            return facialHair;
-        case "eyeColor":
-            return eyeColor;
-        case "pimples":
-            return pimples;
-        case "hat":
-            return hat;
-        case "hairColor":
-            return hairColor;
-        case "noseShape":
-            return noseShape;
-        case "faceShape":
-            return faceShape;
-        default:
-            return "unknown";
-        }
+    public LinkedHashMap<String, String> getPersonaAttValSet() {
+        return personaAttValSet;
     }
+
+    public void setPersonaAttValSet(LinkedHashMap<String, String> personaAttValSet) {
+        this.personaAttValSet = personaAttValSet;
+    }
+
 }

@@ -1,32 +1,31 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Random;
 
 public class Config {
 
-    public static String[] ATTRIBUTES = new String[] { "hairLength", "glasses", "facialHair", "eyeColor", "pimples", "hat",
-            "hairColor", "noseShape", "faceShape" };
+    public static String[] ATTRIBUTES = new String[] { "hairLength", "glasses", "facialHair", "eyeColor", "pimples",
+            "hat", "hairColor", "noseShape", "faceShape" };
 
     public List<String> attributeList = Arrays.asList(ATTRIBUTES);
 
     public HashMap<String, ArrayList<String>> attValSet = new HashMap<String, ArrayList<String>>();
-
-    public static HashMap<String, HashMap<String, String>> persona = new HashMap<String, HashMap<String, String>>();
-
-
+    
+    public ArrayList<Persona> personas = new ArrayList<Persona>();
+    
+    public int playerNum = 0;
+    
     public void configFileLoader(String gameFileName) {
 
         BufferedReader configReader = null;
         BufferedReader valueReader = null;
         String configData = "";
         int lineNo = 1;
-        int playerNum = 0;
         int configLine = 11;
 
         try {
@@ -53,25 +52,27 @@ public class Config {
                 attValSet.put(tempString[0], valueList);
             }
 
-            // 
             while ((configData = valueReader.readLine()) != null) {
 
-                String[] attribute = new String[2];
-                
+                String[] attVal = new String[2];
+
                 // Read name
                 String name = valueReader.readLine();
 
                 if (name == null) {
                     break;
                 }
+                
+                LinkedHashMap<String, String> tempAttValSet = new LinkedHashMap<String, String>(); 
 
-                // Store attribute and value pair into personaAttValSet
-                HashMap<String, String> tempAttValSet = new HashMap<String, String>();
                 for (int i = 0; i < 9; i++) {
-                    attribute = valueReader.readLine().split("\\s");
-                    tempAttValSet.put(attribute[0], attribute[1]);
+                    attVal = valueReader.readLine().split("\\s");
+                    tempAttValSet.put(attVal[0], attVal[1]);
                 }
-                persona.put(name, tempAttValSet);
+                
+                Persona tempPersona = new Persona(name, tempAttValSet);
+                
+                personas.add(tempPersona);
 
             }
 
