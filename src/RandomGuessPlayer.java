@@ -44,7 +44,6 @@ public class RandomGuessPlayer implements Player {
         }
 
         alivePersona = c.personas.size();
-        System.out.println("alive persona in constructor: " + alivePersona + "\n\n");
 
     } // end of RandomGuessPlayer()
 
