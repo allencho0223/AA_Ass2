@@ -1,11 +1,21 @@
 Round 1
-Player 1 guessing Person  P4
+Player 1 guessing Person  P9
 Player 2 answering false
-Player 2 guessing Person  P10
+Player 2 guessing Attribute hairColor red
 Player 1 answering false
 Round 2
-Player 1 guessing Attribute hairLength long
+Player 1 guessing Attribute hat on
 Player 2 answering false
-Player 2 guessing Person  P3
+Player 2 guessing Attribute hairLength short
+Player 1 answering false
+Round 3
+Player 1 guessing Person  P1
+Player 2 answering false
+Player 2 guessing Attribute eyeColor black
 Player 1 answering true
-Player 2 won!
+Round 4
+Player 1 guessing Person  P5
+Player 2 answering true
+Player 2 guessing Attribute facialHair brown
+Player 1 answering false
+Player 1 won!

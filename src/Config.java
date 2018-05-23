@@ -111,67 +111,58 @@ public class Config {
         // return persona;
     }
 
-    public LinkedHashMap<String, String> generateBinaryDecisionTree(String gameFileName) {
+    public ArrayList<String> generateBinaryDecisionTree(ArrayList<Person> personList, int playerNum) {
 
-        BufferedReader attValReader = null;
         LinkedHashMap<String, Integer> binaryAttValHashMap = new LinkedHashMap<String, Integer>();
-        LinkedHashMap<String, String> returnAttVal = new LinkedHashMap<String, String>(); 
         int attValLine = 2;
         String[] tempAttVal = new String[attValLine];
-
-        try {
-            attValReader = new BufferedReader(new FileReader(gameFileName));
-
-            // Skip att val pair instruction lines
-            for (int i = 0; i < noOfAttribute + 1; i++) {
-                attValReader.readLine();
-            }
-
-            // Run a few times based on the persona number in the config file
-            for (int i = 0; i < playerNum; i++) {
-                // Skip player name
-                attValReader.readLine();
-                // Store att val pair into binaryAttVal LinkedHashMap
-                for (int j = 0; j < noOfAttribute; j++) {
-                    tempAttVal = attValReader.readLine().split("\\s");
-                    BinaryHelper bh = new BinaryHelper(tempAttVal[0], tempAttVal[1]);
-                    
-                    if (binaryAttValHashMap.containsKey(bh.toString())) {
-                        binaryAttValHashMap.replace(bh.toString(), binaryAttValHashMap.get(bh.toString()) + 1);
-                    } else {
-                        binaryAttValHashMap.put(bh.toString(), 1);
-                    }
-                    
+        ArrayList<String> returnAttVal = new ArrayList<String>();
+        
+//        System.out.println("alive person number: " + playerNum);
+//        for (Person person : personList) {
+//            System.out.println("alive person: " + person.getName());
+//        }
+        
+        for (int i = 0; i < personList.size(); i++) {
+            for (Entry<String, String> entry : personList.get(i).getPersonAttValSet().entrySet()) {
+                tempAttVal[0] = entry.getKey();
+                tempAttVal[1] = entry.getValue();
+                BinaryHelper bh = new BinaryHelper(tempAttVal[0], tempAttVal[1]);
+                
+                if (binaryAttValHashMap.containsKey(bh.toString())) {
+                    binaryAttValHashMap.replace(bh.toString(), binaryAttValHashMap.get(bh.toString()) + 1);
+                } else {
+                    binaryAttValHashMap.put(bh.toString(), 1);
                 }
-                // Skip empty line
-                attValReader.readLine();
             }
-            
-            int idealCount = playerNum / 2;
-            
-//            for (Entry<String, Integer> entry : binaryAttValHashMap.entrySet()) {
-//                
-//                while (true) {
-//                    if (entry.getValue() == idealCount) {
-//                        tempAttVal = entry.getKey().split("\\s");
-//                        returnAttVal.put(tempAttVal[0], tempAttVal[1]);
-//                        break;
-//                    } else if (entry.getValue() == idealCount - 1) {
-//                        
-//                        
-//                    } else if (entry.getValue() == idealCount + 1) {
-//                        
-//                    } else {
-//                        idealCount--;
-//                    }
-//                }
-//            }
-
-        } catch (IOException e) {
-            System.err.println("IOException in generateBinaryDecisionTree method");
         }
         
-        return returnAttVal;
+//        for (Entry<String, Integer> entry : binaryAttValHashMap.entrySet()) {
+//            System.out.println("att-val pair: " + entry.toString());
+//            System.out.println("number: " + entry.getKey());
+//        }
+        
+      int idealCount = playerNum / 2;
+      boolean isSetFound = false;
+
+      for (int i = 0; i < playerNum; i++) {
+          for (Entry<String, Integer> entry : binaryAttValHashMap.entrySet()) {
+              if (entry.getValue() == idealCount) {
+                  tempAttVal = entry.getKey().split("\\s");
+                  returnAttVal.add(tempAttVal[0]);
+                  returnAttVal.add(tempAttVal[1]);
+                  isSetFound = true;
+                  break;
+              }
+          }
+          if (isSetFound) {
+              break;
+          } else {
+              idealCount--;
+          }
+      }
+      
+      return returnAttVal;
 
     }
 

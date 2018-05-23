@@ -3,11 +3,11 @@ import java.util.*;
 public class Person {
     
     private String name = "";
-    private LinkedHashMap<String, String> personaAttValSet = new LinkedHashMap<String, String>();
+    private LinkedHashMap<String, String> personAttValSet = new LinkedHashMap<String, String>();
     
     public Person(String name, LinkedHashMap<String, String> personaAttValSet) {
         this.setName(name);
-        this.setPersonaAttValSet(personaAttValSet);
+        this.setPersonAttValSet(personaAttValSet);
     }
 
     public String getName() {
@@ -18,12 +18,12 @@ public class Person {
         this.name = name;
     }
 
-    public LinkedHashMap<String, String> getPersonaAttValSet() {
-        return personaAttValSet;
+    public LinkedHashMap<String, String> getPersonAttValSet() {
+        return personAttValSet;
     }
 
-    public void setPersonaAttValSet(LinkedHashMap<String, String> personaAttValSet) {
-        this.personaAttValSet = personaAttValSet;
+    public void setPersonAttValSet(LinkedHashMap<String, String> personAttValSet) {
+        this.personAttValSet = personAttValSet;
     }
 
 }
