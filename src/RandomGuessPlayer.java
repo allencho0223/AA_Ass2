@@ -16,7 +16,7 @@ public class RandomGuessPlayer implements Player {
     public Config c = new Config();
     public Random r = new Random();
     public static int alivePersona = 0;
-    public Persona chosenPersona;
+    public Person chosenPerson;
 
     /**
      * Loads the game configuration from gameFilename, and also store the chosen
@@ -37,13 +37,13 @@ public class RandomGuessPlayer implements Player {
 
         c.configFileLoader(gameFilename);
 
-        for (Persona persona : c.personas) {
-            if (persona.getName().equals(chosenName)) {
-                chosenPersona = new Persona(persona.getName(), persona.getPersonaAttValSet());
+        for (Person person : c.personList) {
+            if (person.getName().equals(chosenName)) {
+                chosenPerson = new Person(person.getName(), person.getPersonaAttValSet());
             }
         }
 
-        alivePersona = c.personas.size();
+        alivePersona = c.personList.size();
 
     } // end of RandomGuessPlayer()
 
@@ -80,13 +80,13 @@ public class RandomGuessPlayer implements Player {
 
             if (alivePersona == 1) {
                 // get the last person's name - must be the chosen persona
-                for (Persona persona : c.personas) {
-                    guessValue = persona.getName();
+                for (Person person : c.personList) {
+                    guessValue = person.getName();
                 }
             } else {
 
                 // Persona's name - random
-                guessValue = c.personas.get(r.nextInt(c.personas.size())).getName();
+                guessValue = c.personList.get(r.nextInt(c.personList.size())).getName();
 
             }
         } else {
@@ -123,7 +123,7 @@ public class RandomGuessPlayer implements Player {
 
             // Compare value with chosen person's name
             // If correct, return yes
-            if (currGuess.getValue().equals(chosenPersona.getName())) {
+            if (currGuess.getValue().equals(chosenPerson.getName())) {
                 return true;
             }
 
@@ -134,7 +134,7 @@ public class RandomGuessPlayer implements Player {
         } else {
 
             // If guessed attribute and value match the chosen persona's, return true
-            for (Entry<String, String> entry : chosenPersona.getPersonaAttValSet().entrySet()) {
+            for (Entry<String, String> entry : chosenPerson.getPersonaAttValSet().entrySet()) {
                 if (currGuess.getAttribute().equals(entry.getKey()) && currGuess.getValue().equals(entry.getValue())) {
                     System.out.println("currGuessAtt: " + currGuess.getAttribute());
                     System.out.println("entryAtt: " + entry.getKey());
@@ -157,33 +157,33 @@ public class RandomGuessPlayer implements Player {
          * person, and guessed the opponent's player correctly, answer == true, and
          * finish the game, otherwise, answer == false 2. If the player chose mType as
          * attribute, and guessed the opponent's player value correctly, answer == true,
-         * and remove personas who don't have the value, otherwise, answer == false
+         * and remove personList who don't have the value, otherwise, answer == false
          * 
          */
 
         // If the answer is true
         if (answer) {
 
-            ArrayList<String> deadPersona = new ArrayList<String>();
+            ArrayList<String> deadPerson = new ArrayList<String>();
 
-            // Kill personas who don't have guessed value
+            // Kill personList who don't have guessed value
             if (currGuess.getType().equals(Guess.GuessType.Attribute)) {
-                for (Persona persona : c.personas) {
-                    for (Entry<String, String> entry : persona.getPersonaAttValSet().entrySet()) {
+                for (Person person : c.personList) {
+                    for (Entry<String, String> entry : person.getPersonaAttValSet().entrySet()) {
                         if (entry.getKey().equals(currGuess.getAttribute())
                                 && !entry.getValue().equals(currGuess.getValue())) {
-                            System.out.println(persona.getName() + " is dead in true");
+                            System.out.println(person.getName() + " is dead in true");
                             System.out.println(entry.getKey() + " is the att in true");
                             System.out.println(entry.getValue() + " is the val in true\n\n");
-                            deadPersona.add(persona.getName());
+                            deadPerson.add(person.getName());
                         }
                     }
                 }
 
-                for(int i = 0; i < c.personas.size();i++){
-                    for (int j = 0; j < deadPersona.size(); j++) {
-                        if(c.personas.get(i).getName().equals(deadPersona.get(j))){
-                            c.personas.remove(i--);
+                for(int i = 0; i < c.personList.size();i++){
+                    for (int j = 0; j < deadPerson.size(); j++) {
+                        if(c.personList.get(i).getName().equals(deadPerson.get(j))){
+                            c.personList.remove(i--);
                             if (i < 0) {
                                 i = 0;
                             }
@@ -205,19 +205,19 @@ public class RandomGuessPlayer implements Player {
             // remove the incorrect guessed persona from the list and return false
             if (currGuess.getType().equals(Guess.GuessType.Person)) {
 
-                String deadPersona = "";
-                for (Persona persona : c.personas) {
-                    if (persona.getName().equals(currGuess.getValue())) {
-                        deadPersona = persona.getName();
-                        System.out.println(deadPersona + " will be dead soon");
+                String deadPerson = "";
+                for (Person person : c.personList) {
+                    if (person.getName().equals(currGuess.getValue())) {
+                        deadPerson = person.getName();
+                        System.out.println(deadPerson + " will be dead soon");
                         break;
                     }
                 }
 
-                for(int i = 0; i < c.personas.size();i++){
+                for(int i = 0; i < c.personList.size();i++){
                     for (int j = 0; j < 1; j++) {
-                        if(c.personas.get(i).getName().equals(deadPersona)){
-                            c.personas.remove(i--);
+                        if(c.personList.get(i).getName().equals(deadPerson)){
+                            c.personList.remove(i--);
                             if (i < 0) {
                                 i = 0;
                             }
@@ -227,28 +227,28 @@ public class RandomGuessPlayer implements Player {
                 }
 
                 // If the player has incorrect guess on the opponent's value
-                // Remove the personas who don't have the value
+                // Remove the personList who don't have the value
             } else {
 
-                // Kill personas who don't have guessed value that chosen persona has
-                ArrayList<String> deadPersona = new ArrayList<String>();
+                // Kill personList who don't have guessed value that chosen persona has
+                ArrayList<String> deadPerson = new ArrayList<String>();
 
-                for (Persona persona : c.personas) {
-                    for (Entry<String, String> entry : persona.getPersonaAttValSet().entrySet()) {
+                for (Person person : c.personList) {
+                    for (Entry<String, String> entry : person.getPersonaAttValSet().entrySet()) {
                         if (entry.getKey().equals(currGuess.getAttribute())
                                 && entry.getValue().equals(currGuess.getValue())) {
-                            System.out.println(persona.getName() + " is dead in false");
+                            System.out.println(person.getName() + " is dead in false");
                             System.out.println(entry.getKey() + " is the att in false");
                             System.out.println(entry.getValue() + " is the val in false\n\n");
-                            deadPersona.add(persona.getName());
+                            deadPerson.add(person.getName());
                         }
                     }
                 }
 
-                for(int i = 0; i < c.personas.size();i++){
-                    for (int j = 0; j < deadPersona.size(); j++) {
-                        if(c.personas.get(i).getName().equals(deadPersona.get(j))){
-                            c.personas.remove(i--);
+                for(int i = 0; i < c.personList.size();i++){
+                    for (int j = 0; j < deadPerson.size(); j++) {
+                        if(c.personList.get(i).getName().equals(deadPerson.get(j))){
+                            c.personList.remove(i--);
                             if (i < 0) {
                                 i = 0;
                             }

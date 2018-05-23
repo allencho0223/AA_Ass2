@@ -13,8 +13,8 @@ public class BinaryGuessPlayer implements Player {
 
     public Config c = new Config();
     public Random r = new Random();
-    public static int alivePersona = 0;
-    public Persona chosenPersona;
+    public static int alivePerson = 0;
+    public Person chosenPerson;
 
     /**
      * Loads the game configuration from gameFilename, and also store the chosen
@@ -33,14 +33,15 @@ public class BinaryGuessPlayer implements Player {
     public BinaryGuessPlayer(String gameFilename, String chosenName) throws IOException {
 
         c.configFileLoader(gameFilename);
+        c.generateBinaryDecisionTree(gameFilename);
 
-        for (Persona persona : c.personas) {
-            if (persona.getName().equals(chosenName)) {
-                chosenPersona = new Persona(persona.getName(), persona.getPersonaAttValSet());
+        for (Person person : c.personList) {
+            if (person.getName().equals(chosenName)) {
+                chosenPerson = new Person(person.getName(), person.getPersonaAttValSet());
             }
         }
 
-        alivePersona = c.personas.size();
+        alivePerson = c.personList.size();
         
 //        c.generateBinaryDecisionTree();
     } // end of BinaryGuessPlayer()

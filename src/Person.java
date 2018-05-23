@@ -1,11 +1,11 @@
 import java.util.*;
 
-public class Persona {
+public class Person {
     
     private String name = "";
     private LinkedHashMap<String, String> personaAttValSet = new LinkedHashMap<String, String>();
     
-    public Persona(String name, LinkedHashMap<String, String> personaAttValSet) {
+    public Person(String name, LinkedHashMap<String, String> personaAttValSet) {
         this.setName(name);
         this.setPersonaAttValSet(personaAttValSet);
     }

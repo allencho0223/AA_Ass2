@@ -20,21 +20,26 @@ public class Config {
 
     public LinkedHashMap<String, ArrayList<String>> attValSet = new LinkedHashMap<String, ArrayList<String>>();
 
-    public ArrayList<Persona> personas = new ArrayList<Persona>();
+    public ArrayList<Person> personList = new ArrayList<Person>();
 
     public int playerNum = 0;
+    
+    public int noOfAttribute = 0;
 
     public void configFileLoader(String gameFileName) {
 
         BufferedReader configReader = null;
         BufferedReader valueReader = null;
+        BufferedReader attributeReader = null;
         String configData = "";
         int lineNo = 1;
         int configLine = 11;
+        
 
         try {
             configReader = new BufferedReader(new FileReader(gameFileName));
             valueReader = new BufferedReader(new FileReader(gameFileName));
+            attributeReader = new BufferedReader(new FileReader(gameFileName));
 
             while ((configData = configReader.readLine()) != null) {
 
@@ -43,9 +48,26 @@ public class Config {
                 }
                 lineNo++;
             }
-
+            
+            //read a line in
+            //while bufferedreader's next line is not just a newline
+                //do logic from below loop as per usual
+                //increment conunter for numAttributes 
+                //read a new line
+            //end while
+            
+            //(attribute, value) ==> number of people who have that attribute
+            
+            
+            while ((configData = attributeReader.readLine()) != null) {
+                if (configData.isEmpty()) {
+                    break;
+                }
+                noOfAttribute++;
+            }
+            
             // Add attribute and value set instruction
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i < noOfAttribute; i++) {
                 String[] tempString = new String[10];
                 ArrayList<String> valueList = new ArrayList<String>();
 
@@ -62,6 +84,7 @@ public class Config {
 
                 // Read name
                 String name = valueReader.readLine();
+                
 
                 if (name == null) {
                     break;
@@ -69,14 +92,14 @@ public class Config {
 
                 LinkedHashMap<String, String> tempAttValSet = new LinkedHashMap<String, String>();
 
-                for (int i = 0; i < 9; i++) {
+                for (int i = 0; i < noOfAttribute; i++) {
                     attVal = valueReader.readLine().split("\\s");
                     tempAttValSet.put(attVal[0], attVal[1]);
                 }
 
-                Persona tempPersona = new Persona(name, tempAttValSet);
+                Person tempPerson = new Person(name, tempAttValSet);
 
-                personas.add(tempPersona);
+                personList.add(tempPerson);
 
             }
 
@@ -90,11 +113,75 @@ public class Config {
                 if (valueReader != null) {
                     valueReader.close();
                 }
+                if (attributeReader != null) {
+                    attributeReader.close();
+                }
             } catch (IOException ioe) {
                 System.err.println(ioe.getLocalizedMessage());
             }
         }
         // return persona;
+    }
+    
+    public void generateBinaryDecisionTree(String gameFileName) {
+        
+        BufferedReader attValReader = null;
+        LinkedHashMap<BinaryHelper, Integer> binaryAttValHashMap = new LinkedHashMap<BinaryHelper, Integer>();
+        ArrayList<BinaryHelper> binaryAttVal = new ArrayList<BinaryHelper>();
+        String attValPair ="";
+        int attValLine = 2;
+        String[] tempAttVal = new String[attValLine];
+        
+        try {
+            attValReader = new BufferedReader(new FileReader(gameFileName));
+            
+            // Skip att val pair instruction lines
+            for (int i = 0; i < noOfAttribute + 1; i++) {
+                attValReader.readLine();
+            }
+            
+            /**
+             * P0
+             * hairLength....
+             */
+            
+            // Run a few times based on the persona number in the config file
+            for (int i = 0; i < playerNum; i++) {
+                // Skip player name
+                attValReader.readLine();
+                // Store att val pair into binaryAttVal LinkedHashMap
+                for (int j = 0; j < noOfAttribute; j++) {
+                    tempAttVal = attValReader.readLine().split("\\s");
+                    binaryAttVal.add(new BinaryHelper(tempAttVal[0], tempAttVal[1]));
+//                    binaryAttVal.put(new BinaryHelper(tempAttVal[0], tempAttVal[1]), 1);
+                }
+                // Skip empty line
+                attValReader.readLine();
+            }
+            
+            for (BinaryHelper list : binaryAttVal) {
+                if (!binaryAttValHashMap.containsKey(list)) {
+                    binaryAttValHashMap.put(list, 1);
+                    System.out.println("doesn't exist");
+                } else {
+                    binaryAttValHashMap.replace(list, binaryAttValHashMap.get(list).intValue() + 1);
+                    System.out.println("exists! increment number");
+                }
+            }
+            
+            for (Entry<BinaryHelper, Integer> entry : binaryAttValHashMap.entrySet()) {
+                System.out.println("entry key - attribute: " + entry.getKey().getAttribute());
+                System.out.println("entry key - value: " + entry.getKey().getValue());
+                System.out.println("entry value - number: " + entry.getValue());
+            }
+            
+            
+        } catch (IOException e) {
+            System.err.println("IOException in generateBinaryDecisionTree method");
+        }
+        
+        
+        
     }
 
 //    public void generateBinaryDecisionTree() {
