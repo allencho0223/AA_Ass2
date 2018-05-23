@@ -47,7 +47,6 @@ public class BinaryGuessPlayer implements Player {
 
     } // end of BinaryGuessPlayer()
 
-    //
     public Guess guess() {
 
         Guess.GuessType guessType = null;
@@ -93,12 +92,10 @@ public class BinaryGuessPlayer implements Player {
         } else {
 
             // If guessed attribute-value pair matches chosen person's one, return true
-            for (Entry<String, String> entry : chosenPerson.getPersonAttValSet().entrySet()) {
-                if (currGuess.getAttribute().equals(entry.getKey()) && currGuess.getValue().equals(entry.getValue())) {
-                    return true;
-                }
-            }
 
+            if (chosenPerson.getPersonAttValSet().get(currGuess.getAttribute()).equals(currGuess.getValue())) {
+                return true;
+            }
             // If guessed attribute-value pair doesn't match chosen' person's one, return
             // false
             return false;
@@ -109,12 +106,12 @@ public class BinaryGuessPlayer implements Player {
 
         if (answer) {
             // If mType == Person
-            // Always return true because the guessed person is the last person left in the list
             if (currGuess.getType().equals(Guess.GuessType.Person)) {
                 System.out.println("guessed person: " + currGuess.getValue());
                 return true;
 
-                // Else, mType == Attribute, and the chosen person has guessed attribute-value pair
+                // Else, mType == Attribute, and the chosen person has guessed attribute-value
+                // pair
                 // Remove people who don't have the guessed attribute-value pair from the list
             } else {
 

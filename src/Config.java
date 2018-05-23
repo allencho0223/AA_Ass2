@@ -3,12 +3,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 public class Config {
@@ -137,10 +133,11 @@ public class Config {
             }
         }
         
-//        for (Entry<String, Integer> entry : binaryAttValHashMap.entrySet()) {
-//            System.out.println("att-val pair: " + entry.toString());
-//            System.out.println("number: " + entry.getKey());
-//        }
+        for (Entry<String, Integer> entry : binaryAttValHashMap.entrySet()) {
+            System.out.println("att-val pair: " + entry.toString());
+            System.out.println("number: " + entry.getValue());
+        }
+        System.out.println("\n\n\n");
         
       int idealCount = playerNum / 2;
       boolean isSetFound = false;
