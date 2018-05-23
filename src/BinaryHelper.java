@@ -24,5 +24,10 @@ public class BinaryHelper {
     public void setValue(String value) {
         this.value = value;
     }
+    
+    @Override
+    public String toString() {
+        return attribute + " " + value;
+    }
 
 }
