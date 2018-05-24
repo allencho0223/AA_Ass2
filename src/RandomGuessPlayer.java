@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 
 
+
 //Random guessing player. This player is for task B.
 public class RandomGuessPlayer implements Player {
 
@@ -14,7 +15,7 @@ public class RandomGuessPlayer implements Player {
     public Person chosenPerson;
 
     
-    // Loads the game configuration from gameFilename, and also store the chosen
+    // Loads the game configuration from gameFilename, and also store the chosen person.
     public RandomGuessPlayer(String gameFilename, String chosenName) throws IOException {
 
         c.configFileLoader(gameFilename);
@@ -24,7 +25,6 @@ public class RandomGuessPlayer implements Player {
                 chosenPerson = new Person(person.getName(), person.getPersonAttValSet());
             }
         }
-       // System.out.println("chosenPerson: " + chosenPerson.getName());
         alivePerson = c.personList.size();
 
     } // end of RandomGuessPlayer()
@@ -32,42 +32,34 @@ public class RandomGuessPlayer implements Player {
  
     
     
-    @SuppressWarnings("static-access")
     public Guess guess() {
 
-    	System.out.println(" ");
-    	
         String guessAttribute = "";
         String guessValue = "";
-        ArrayList<Guess.GuessType> tempGuessType = new ArrayList<Guess.GuessType>();
+        
+        //declare array of the two GuessTypes
+        Guess.GuessType[] guessTypes = Guess.GuessType.values();
         Guess.GuessType guessType = null;
-        
-        for(Person person: c.personList)
-        System.out.print("Players left: " + person.getName() + " ");
-
-        for (Guess.GuessType type : guessType.values()) 
-            tempGuessType.add(type);
-        
-
-        if (alivePerson == 1) {
+   
+        // the guessType is chosen randomly from enum values to ensure that this player is random each time. 
+        // this allows the player to randomly choose the correct person in one guess (very rarely)        
+        if (alivePerson == 1) 
             guessType = Guess.GuessType.Person;
-        } else {
-            guessType = tempGuessType.get(r.nextInt(tempGuessType.size()));
-            System.out.println("GUESS TYPE = " + guessType);
-        }
+        else 
+            guessType = guessTypes[r.nextInt(guessTypes.length)];
 
        
+        // if GuessType Person is randomly chosen:
         if (guessType == Guess.GuessType.Person) {
         	guessValue = personGuessValue(guessValue, guessAttribute);
-        	
+        
+        // if GuessType Attribute is randomly chosen:	
         } else {
-
         	guessAttribute =  getGuessAttribute(guessAttribute);
             guessValue = getGuessValue(guessAttribute);
            
         }
         
-        System.out.println("RANDOMGUESSPLAYER GUESS = " + guessType + "  " +  guessAttribute + "  " + guessValue);
         return new Guess(guessType, guessAttribute, guessValue);
 
 
@@ -76,8 +68,8 @@ public class RandomGuessPlayer implements Player {
     
     
     
-    // If mType == Person, compare value with chosen person's name. If correct, return yes, else return false
-    // If mType == Attribute and value match the chosen persona's, return true, else return false
+    // If GuessType is Person, compare value with chosen person's name. If correct, return true, else return false
+    // If GuessType Attribute and value match the chosen persona's, return true, else return false
     public boolean answer(Guess currGuess) {
 
         if (currGuess.getType().equals(Guess.GuessType.Person)) 
@@ -102,10 +94,10 @@ public class RandomGuessPlayer implements Player {
     
     public boolean receiveAnswer(Guess currGuess, boolean answer) {
 
-        // If the answer is true, 
+        // If the answer is true 
         if (answer) {
 
-        	//else add to the deadPersons list those that do not match the attribute value pair according to true guess
+        	//add to deadPerson list those that do not match the attribute value pair according to true guess
             //update the personList for next round
             if (currGuess.getType().equals(Guess.GuessType.Attribute)) {
                 ArrayList<String> deadPersons = deadPersonsTrueGuess(currGuess); 
@@ -120,7 +112,7 @@ public class RandomGuessPlayer implements Player {
             // If the answer is false
         } else {
 
-            // If the player has incorrect guess on the opponent's player,
+            // and the GuessType is Person
             // Remove the incorrect guessed person from the list and return false
             if (currGuess.getType().equals(Guess.GuessType.Person)) {
 
@@ -134,7 +126,7 @@ public class RandomGuessPlayer implements Player {
                 updatePersonList(deadPerson); 
                 
                 // If the player has incorrect guess on the opponent's value
-                // Remove the personList who don't have the value
+                // Remove the personList who do not have that value
             } else {
 
                 ArrayList<String> deadPerson = deadPersonsFalseGuess(currGuess); 
@@ -152,12 +144,15 @@ public class RandomGuessPlayer implements Player {
     
     
     
+    //********************************************************************************************************************
     
+    
+
     
     //start of Helper methods:
     
     
-    //  If guess type is person: attribute == "" value == person's name
+    
     //  Get the last person's name if only 1 person left otherwise guess a random person from the personList
     public String personGuessValue(String guessValue, String guessAttribute) {
     	
@@ -174,8 +169,8 @@ public class RandomGuessPlayer implements Player {
     }
     
     
-    // Guess type is attribute: attribute == the attribute of person value
-    // Get random attribute
+    // Guess Type is Attribute
+    // Get random attribute from the config attribute value set and choose an attribute randomly
     public String getGuessAttribute(String guessAttribute) {
 	   
 		    ArrayList<String> tempAttributes = new ArrayList<String>();		    
@@ -190,7 +185,8 @@ public class RandomGuessPlayer implements Player {
    
    
 
-   // Check which values does the attribute have from the attribute value pair
+   // Guess Type is Attribute
+   // Get random value from the config attribute value set and choose a value randomly
    public String getGuessValue(String guessAttribute) {
 	   
 	   String guessValue = null;
@@ -207,6 +203,7 @@ public class RandomGuessPlayer implements Player {
    }
     
    
+   // If the guess was true, then add values from deadPerson List that do not match the att/values of the guessed person
    public ArrayList<String> deadPersonsTrueGuess(Guess currGuess) 
    {
 	   ArrayList<String> deadPerson = new ArrayList<String>();
@@ -224,7 +221,7 @@ public class RandomGuessPlayer implements Player {
  
    
 
-    // Populate deadPerson list with persons who do not have chosen persons attributes
+    // If the guess was false, then add values from the deadPerson List that match the att/values of the guessed person
     public ArrayList<String> deadPersonsFalseGuess(Guess currGuess) 
     {
     	  ArrayList<String> deadPerson = new ArrayList<String>();
@@ -243,7 +240,7 @@ public class RandomGuessPlayer implements Player {
     }
     
 
-    // Kill person in personList who is not the Player's chosen person
+    // Remove the dead person in personList who is not the Player's chosen person
     public void updatePersonList(String deadPerson) 
     {
     	 for(int i = 0; i < c.personList.size();i++)

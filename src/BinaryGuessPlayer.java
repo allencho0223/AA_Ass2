@@ -1,15 +1,14 @@
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.Random;
 
-// Binary-search based guessing player. This player is for task C.
 
+// Binary-search based guessing player. This player is for task C.
 public class BinaryGuessPlayer implements Player {
 
-    public Config c = new Config();
-    public Random r = new Random();
+    public Config config = new Config();
+    public Random random = new Random();
     public ArrayList<String> returnedAttValSet = new ArrayList<String>();
     public int alivePerson = 0;
     public Person chosenPerson;
@@ -20,38 +19,40 @@ public class BinaryGuessPlayer implements Player {
      
     public BinaryGuessPlayer(String gameFilename, String chosenName) throws IOException {
         
-        c.configFileLoader(gameFilename);
-        for (Person person : c.personList) {
+        config.configFileLoader(gameFilename);
+        for (Person person : config.personList) {
             if (person.getName().equals(chosenName)) {
                 chosenPerson = new Person(person.getName(), person.getPersonAttValSet());
             }
         }
-        alivePerson = c.personList.size();
+        alivePerson = config.personList.size();
 
     } // end of BinaryGuessPlayer()
 
+    
+    
     public Guess guess() {
 
-    	System.out.println(" ");
-    	
         Guess.GuessType guessType = null;
         String guessAttribute = "";
         String guessValue = "";
 
-        returnedAttValSet = binaryHelper.generateBinaryDecisionTree(c.personList, alivePerson);
+        // The ideal Attribute/Value set chosen by the Generator to eliminate almost half the persons each round
+        returnedAttValSet = binaryHelper.generateIdealBinaryGuess(config.personList, alivePerson);
 
+        // If more than one person is still alive, use ideal Attribute/Value set as the next Guess
         if (alivePerson != 1) {
             guessType = Guess.GuessType.Attribute;
             guessAttribute = returnedAttValSet.get(0);
             guessValue = returnedAttValSet.get(1);
 
-            // Get the last person's name only if there is 1 person left
+        // Otherwise get the remaining person's name only if there is 1 person left
         } else {
 
             guessType = Guess.GuessType.Person;
             guessAttribute = "";
             
-            for (Person person : c.personList) 
+            for (Person person : config.personList) 
                 guessValue = person.getName();
             
         }
@@ -64,26 +65,26 @@ public class BinaryGuessPlayer implements Player {
     
     public boolean answer(Guess currGuess) {
 
-        // If mType == Person
+        // If GuessType is Person and matches the chosen person's name, return true, else false
         if (currGuess.getType().equals(Guess.GuessType.Person)) {
             if (currGuess.getValue().equals(chosenPerson.getName())) {
                 return true;
             }
             return false;
 
-            // Else, mType == Attribute
+            // If the GuessType is Attribute
         } else {
 
-            // If guessed attribute-value pair matches chosen person's one, return true
-
+            // If guessed attribute-value pair matches chosen person's, return true
             if (chosenPerson.getPersonAttValSet().get(currGuess.getAttribute()).equals(currGuess.getValue())) {
                 return true;
             }
-            // If guessed attribute-value pair doesn't match chosen' person's one, return
-            // false
+            // If guessed attribute-value pair doesn't match chosen' person's, return false
             return false;
         }
     } // end of answer()
+    
+    
 
     public boolean receiveAnswer(Guess currGuess, boolean answer) {
     	
@@ -92,7 +93,6 @@ public class BinaryGuessPlayer implements Player {
             
         	// and the type of guess is Person, return true
             if (currGuess.getType().equals(Guess.GuessType.Person)) {
-                System.out.println("guessed person: " + currGuess.getValue());
                 return true;
 
             //else add to the deadPersons list those that do not match the attribute value pair according to true guess
@@ -108,7 +108,8 @@ public class BinaryGuessPlayer implements Player {
 
         // if the current guess is false
         } else {
-        	
+        	 // add to the deadPersons list those that do match the attribute value pair according to false guess
+            //  Remove from the personList those who have the false values
             ArrayList<String> deadPerson = deadPersonFalseGuess(currGuess);
             for (String dead: deadPerson)
                 updatePersonList(dead); 
@@ -136,11 +137,13 @@ public class BinaryGuessPlayer implements Player {
     //start of helper methods
     
     
+    
+    // If the guess was true, then add values from deadPerson List that do not match the att/values of the guessed person
     public ArrayList<String> deadPersonsTrueGuess(Guess currGuess) 
     {
  	   ArrayList<String> deadPerson = new ArrayList<String>();
- 	   for (Person person : c.personList) {
-            for (Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
+ 	   for (Person person : config.personList) {
+            for (HashMap.Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
                 if (entry.getKey().equals(currGuess.getAttribute())
                         && !entry.getValue().equals(currGuess.getValue())) {
                           deadPerson.add(person.getName());
@@ -153,13 +156,13 @@ public class BinaryGuessPlayer implements Player {
   
     
 
-     // Populate deadPerson list with persons who do not have chosen persons attributes
+    // If the guess was false, then add values from the deadPerson List that match the att/values of the guessed person
      public ArrayList<String> deadPersonFalseGuess(Guess currGuess) 
      {
      	  ArrayList<String> deadPerson = new ArrayList<String>();
 
-           for (Person person : c.personList) {
-               for (Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
+           for (Person person : config.personList) {
+               for (HashMap.Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
                    if (entry.getKey().equals(currGuess.getAttribute())
                            && entry.getValue().equals(currGuess.getValue())) {
                 	   		deadPerson.add(person.getName());
@@ -172,13 +175,13 @@ public class BinaryGuessPlayer implements Player {
      }
      
 
-     // Kill person in personList who is not the Player's chosen person
+     // Remove the dead person in personList who is not the Player's chosen person
      public void updatePersonList(String deadPerson) 
      {
-     	 for(int i = 0; i < c.personList.size();i++)
+     	 for(int i = 0; i < config.personList.size();i++)
      	 {
-                  if(c.personList.get(i).getName().equals(deadPerson)){
-                      c.personList.remove(i--);
+                  if(config.personList.get(i).getName().equals(deadPerson)){
+                      config.personList.remove(i--);
                       if (i < 0) 
                           i = 0;
                       alivePerson--;

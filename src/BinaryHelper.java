@@ -1,6 +1,10 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
+// The BinaryHelper Class is used to create helpers that store Attribute and Value strings 
+// This is used in order to help the BinaryGuessPlayer find the most ideal attribute and value pair 
+// to eliminate almost half of the persons each round
 public class BinaryHelper {
     
     private String attribute ="";
@@ -14,16 +18,8 @@ public class BinaryHelper {
         this.setValue(value);
     }
     
-    public String getAttribute() {
-        return attribute;
-    }
-    
     public void setAttribute(String attribute) {
         this.attribute = attribute;
-    }
-    
-    public String getValue() {
-        return value;
     }
     
     public void setValue(String value) {
@@ -36,42 +32,48 @@ public class BinaryHelper {
     }
     
     
-    
-    public ArrayList<String> generateBinaryDecisionTree(ArrayList<Person> personList, int playerNum) {
+    //Generates the ideal attribute value set for the BinaryGuessPlayer
+    public ArrayList<String> generateIdealBinaryGuess(ArrayList<Person> personList, int playerNum) {
 
-        HashMap<String, Integer> binaryAttValHashMap = new HashMap<String, Integer>();
+    	//HashMap stores the combined string of attribute and value as its key
+    	//The HashMap value keeps counts the number of attribute/value set repeats
+        HashMap<String, Integer> attValCount = new HashMap<String, Integer>();
         ArrayList<String> returnIdealAttVal = null;
         
-        System.out.println("BINARY: alive person number = " + playerNum);
-        
+        // Iterate through all persons, and store there attribute value sets in the BinaryHelper HashMap
         for (Person person: personList) 
         {
             for (HashMap.Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
-               setAttribute(entry.getKey());
-               setValue(entry.getValue());
+               this.setAttribute(entry.getKey());
+               this.setValue(entry.getValue());
                 
-                if (binaryAttValHashMap.containsKey(this.toString())) 
-                    binaryAttValHashMap.replace(this.toString(), binaryAttValHashMap.get(this.toString()) + 1);
+               // If the attribute value exists, then increase the count, else count remains at 1
+                if (attValCount.containsKey(this.toString())) 
+                    attValCount.replace(this.toString(), attValCount.get(this.toString()) + 1);
                 else 
-                    binaryAttValHashMap.put(this.toString(), 1);
+                    attValCount.put(this.toString(), 1);
                 
             }
         }
 
-      returnIdealAttVal = getIdealAttVal(binaryAttValHashMap, playerNum); 
+      //return ideal attribute value set  
+      returnIdealAttVal = getIdealAttVal(attValCount, playerNum); 
       return returnIdealAttVal;
 
     }
     
-    
+    // Returns the ideal attribute value set in order to remove half the persons each round
     public ArrayList<String> getIdealAttVal(HashMap<String, Integer> binaryAttValHashMap, int playerNum) 
     {
+    	// declarations
     	ArrayList<String> returnAttVal = new ArrayList<String>();
     	int attValLine = 2;
         String[] tempAttVal = new String[attValLine];
-    	int idealCount = playerNum / 2;
+    	int idealCount = playerNum / 2;   // set ideal count to half the number of players
         boolean isSetFound = false;
 
+        // for all the players remaining, if the ideal count is matched to a specific attribute/value set
+        // if ideal count cannot be found, decrement ideal count and try again until ideal count is matched
         for (int i = 0; i < playerNum; i++) {
             for (HashMap.Entry<String, Integer> entry : binaryAttValHashMap.entrySet()) 
             {
@@ -90,7 +92,7 @@ public class BinaryHelper {
                 idealCount--;
            
         }
-        
+        // return the attribute value as the next guess
         return returnAttVal;
         
     }

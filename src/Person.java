@@ -1,5 +1,8 @@
 import java.util.*;
 
+
+// Person class to create and update a Person with an Attribute Value Set using a HashMap
+// Mainly used to update the personList
 public class Person {
     
     private String name = "";
