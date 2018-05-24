@@ -14,7 +14,7 @@ public class BinaryGuessPlayer implements Player {
     public Config c = new Config();
     public Random r = new Random();
     public ArrayList<String> returnedAttValSet = new ArrayList<String>();
-    public static int alivePerson = 0;
+    public int alivePerson = 0;
     public Person chosenPerson;
 
     /**
@@ -32,9 +32,8 @@ public class BinaryGuessPlayer implements Player {
      *             implementation exits gracefully if an IOException is thrown.
      */
     public BinaryGuessPlayer(String gameFilename, String chosenName) throws IOException {
-
+        
         c.configFileLoader(gameFilename);
-
         for (Person person : c.personList) {
             if (person.getName().equals(chosenName)) {
                 chosenPerson = new Person(person.getName(), person.getPersonAttValSet());
@@ -42,8 +41,6 @@ public class BinaryGuessPlayer implements Player {
         }
         System.out.println("chosenPerson: " + chosenPerson.getName());
         alivePerson = c.personList.size();
-
-        // returnedAttValSet = c.generateBinaryDecisionTree(gameFilename, alivePerson);
 
     } // end of BinaryGuessPlayer()
 

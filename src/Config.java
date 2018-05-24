@@ -114,10 +114,10 @@ public class Config {
         String[] tempAttVal = new String[attValLine];
         ArrayList<String> returnAttVal = new ArrayList<String>();
         
-//        System.out.println("alive person number: " + playerNum);
-//        for (Person person : personList) {
-//            System.out.println("alive person: " + person.getName());
-//        }
+        System.out.println("alive person number: " + playerNum);
+        for (Person person : personList) {
+            System.out.println("alive person: " + person.getName());
+        }
         
         for (int i = 0; i < personList.size(); i++) {
             for (Entry<String, String> entry : personList.get(i).getPersonAttValSet().entrySet()) {
