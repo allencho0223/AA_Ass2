@@ -1,6 +1,5 @@
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -15,24 +14,11 @@ public class RandomGuessPlayer implements Player {
 
     public Config c = new Config();
     public Random r = new Random();
-    public static int alivePersona = 0;
+    public static int alivePerson = 0;
     public Person chosenPerson;
 
-    /**
-     * Loads the game configuration from gameFilename, and also store the chosen
-     * person.
-     *
-     * @param gameFilename
-     *            Filename of game configuration.
-     * @param chosenName
-     *            Name of the chosen person for this player.
-     * @throws IOException
-     *             If there are IO issues with loading of gameFilename. Note you can
-     *             handle IOException within the constructor and remove the "throws
-     *             IOException" method specification, but make sure your
-     *             implementation exits gracefully if an IOException is thrown.
-     */
-
+    
+    //Loads the game configuration from gameFilename, and also store the chosen
     public RandomGuessPlayer(String gameFilename, String chosenName) throws IOException {
 
         c.configFileLoader(gameFilename);
@@ -42,155 +28,92 @@ public class RandomGuessPlayer implements Player {
                 chosenPerson = new Person(person.getName(), person.getPersonAttValSet());
             }
         }
-        System.out.println("chosenPerson: " + chosenPerson.getName());
-        alivePersona = c.personList.size();
+       // System.out.println("chosenPerson: " + chosenPerson.getName());
+        alivePerson = c.personList.size();
 
     } // end of RandomGuessPlayer()
+    
+    
+    
 
     @SuppressWarnings("static-access")
     public Guess guess() {
 
-        // Make a guess
+    	 // Make a guess
         String guessAttribute = "";
         String guessValue = "";
         ArrayList<Guess.GuessType> tempGuessType = new ArrayList<Guess.GuessType>();
         Guess.GuessType guessType = null;
+        
+        for(Person person: c.personList)
+        System.out.print("Players left: " + person.getName() + " ");
 
-        /**
-         * Value. if mType = Attribute, then it is the value of the associated
-         * attribute). if mType = Person, then this is the guessed person's name.
-         */
-
-        for (Guess.GuessType type : guessType.values()) {
+        for (Guess.GuessType type : guessType.values()) 
             tempGuessType.add(type);
-        }
+        
 
-        if (alivePersona == 1) {
+        if (alivePerson == 1) {
             guessType = Guess.GuessType.Person;
         } else {
             guessType = tempGuessType.get(r.nextInt(tempGuessType.size()));
+            System.out.println("GUESS TYPE = " + guessType);
         }
 
-        /**
-         * If guess type is person: att == "" value == person's name
-         */
+       
         if (guessType == Guess.GuessType.Person) {
-
-            guessAttribute = "";
-
-            if (alivePersona == 1) {
-                // get the last person's name - must be the chosen persona
-                for (Person person : c.personList) {
-                    guessValue = person.getName();
-                }
-            } else {
-
-                // Persona's name - random
-                guessValue = c.personList.get(r.nextInt(c.personList.size())).getName();
-
-            }
+        	guessValue = personGuessValue(guessValue, guessAttribute);
+        	
         } else {
-            /**
-             * Else - guess type is attribute: attribute == the attribute of persona value
-             * == value corresponding to the attribute
-             */
 
-            // Get random attribute
-            // Check which values does the attribute have from the attribute value pair
-            // instruction
-            ArrayList<String> tempAttributes = new ArrayList<String>();
-            ArrayList<String> tempValues = new ArrayList<String>();
-            
-            for (HashMap.Entry<String, ArrayList<String>> entry : c.attValSet.entrySet()) {
-                tempAttributes.add(entry.getKey());
-            }
-            
-            guessAttribute = tempAttributes.get(r.nextInt(tempAttributes.size()));
-            
-
-            for (HashMap.Entry<String, ArrayList<String>> entry : c.attValSet.entrySet()) {
-                if (entry.getKey().equals(guessAttribute)) {
-                    tempValues = entry.getValue();
-                }
-            }
-
-            // Get a random value corresponding to the chosen attribute
-            guessValue = tempValues.get(r.nextInt(tempValues.size()));
+        	guessAttribute =  getGuessAttribute(guessAttribute);
+            guessValue = getGuessValue(guessAttribute);
+           
         }
-
+        
+        System.out.println("RANDOMGUESSPLAYER GUESS = " + guessType + "  " +  guessAttribute + "  " + guessValue);
         return new Guess(guessType, guessAttribute, guessValue);
 
-    } // end of guess()
 
+    } // end of guess()
+    
+    
+    
+    
+
+    // If mType == Person, compare value with chosen person's name. If correct, return yes, else return false
+    // If mType == Attribute and value match the chosen persona's, return true, else return false
     public boolean answer(Guess currGuess) {
 
-        // If mType == Person
-        if (currGuess.getType().equals(Guess.GuessType.Person)) {
-
-            // Compare value with chosen person's name
-            // If correct, return yes
-            if (currGuess.getValue().equals(chosenPerson.getName())) {
+        if (currGuess.getType().equals(Guess.GuessType.Person)) 
+        {
+            if (currGuess.getValue().equals(chosenPerson.getName())) 
                 return true;
-            }
-
-            // If they do not match, return false
             return false;
-
-            // Else - mType == Attribute
+            
         } else {
-
-            // If guessed attribute and value match the chosen persona's, return true
-            for (HashMap.Entry<String, String> entry : chosenPerson.getPersonAttValSet().entrySet()) {
-                if (currGuess.getAttribute().equals(entry.getKey()) && currGuess.getValue().equals(entry.getValue())) {
+        	
+            for (Entry<String, String> entry : chosenPerson.getPersonAttValSet().entrySet()) {
+                if (currGuess.getAttribute().equals(entry.getKey()) && currGuess.getValue().equals(entry.getValue())) 
                     return true;
-                }
             }
-
-            // Else, return false
             return false;
         }
     } // end of answer()
 
+    
+    
+    
+    
     public boolean receiveAnswer(Guess currGuess, boolean answer) {
 
-        /**
-         * 
-         * There are 2 cases as regards the guess phase 1. If the player chose mType as
-         * person, and guessed the opponent's player correctly, answer == true, and
-         * finish the game, otherwise, answer == false 2. If the player chose mType as
-         * attribute, and guessed the opponent's player value correctly, answer == true,
-         * and remove personList who don't have the value, otherwise, answer == false
-         * 
-         */
-
-        // If the answer is true
+        // If the answer is true, 
         if (answer) {
 
-            ArrayList<String> deadPerson = new ArrayList<String>();
-
-            // Remove personList who don't have guessed value
+        	// Remove personList who don't have guessed value
             if (currGuess.getType().equals(Guess.GuessType.Attribute)) {
-                for (Person person : c.personList) {
-                    for (HashMap.Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
-                        if (entry.getKey().equals(currGuess.getAttribute())
-                                && !entry.getValue().equals(currGuess.getValue())) {
-                            deadPerson.add(person.getName());
-                        }
-                    }
-                }
-
-                for(int i = 0; i < c.personList.size();i++){
-                    for (int j = 0; j < deadPerson.size(); j++) {
-                        if(c.personList.get(i).getName().equals(deadPerson.get(j))){
-                            c.personList.remove(i--);
-                            if (i < 0) {
-                                i = 0;
-                            }
-                            alivePersona--;
-                        }
-                    }
-                }
-
+                ArrayList<String> deadPersons = updateDeadPersonByFeatures(currGuess); 
+                for (String dead: deadPersons)
+                updatePersonList(dead); 
                 return false;
             }
 
@@ -211,50 +134,124 @@ public class RandomGuessPlayer implements Player {
                         break;
                     }
                 }
-
-                for(int i = 0; i < c.personList.size();i++){
-                    for (int j = 0; j < 1; j++) {
-                        if(c.personList.get(i).getName().equals(deadPerson)){
-                            c.personList.remove(i--);
-                            if (i < 0) {
-                                i = 0;
-                            }
-                            alivePersona--;
-                        }
-                    }
-                }
-
+                updatePersonList(deadPerson); 
+                
                 // If the player has incorrect guess on the opponent's value
                 // Remove the personList who don't have the value
             } else {
 
-                // Kill personList who have guessed value that chosen person doesn't have
-                ArrayList<String> deadPerson = new ArrayList<String>();
-
-                for (Person person : c.personList) {
-                    for (HashMap.Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
-                        if (entry.getKey().equals(currGuess.getAttribute())
-                                && entry.getValue().equals(currGuess.getValue())) {
-                            deadPerson.add(person.getName());
-                        }
-                    }
-                }
-
-                for(int i = 0; i < c.personList.size();i++){
-                    for (int j = 0; j < deadPerson.size(); j++) {
-                        if(c.personList.get(i).getName().equals(deadPerson.get(j))){
-                            c.personList.remove(i--);
-                            if (i < 0) {
-                                i = 0;
-                            }
-                            alivePersona--;
-                        }
-                    }
-                }
-
+                ArrayList<String> deadPerson = updateDeadPersons(currGuess); 
+                for (String dead: deadPerson)
+                updatePersonList(dead); 
+             
             }
             return false;
         }
     } // end of receiveAnswer()
+    
+    
+    
+    
+    //  If guess type is person: attribute == "" value == person's name
+    //  Get the last person's name if only 1 person left otherwise guess a random person from the personList
+    public String personGuessValue(String guessValue, String guessAttribute) {
+    	
+    	guessAttribute = "";
+    	
+        if (alivePerson == 1) {
+            for (Person person : c.personList) 
+                guessValue = person.getName();
+            
+        } else 
+            guessValue = c.personList.get(r.nextInt(c.personList.size())).getName();
+        
+        return guessValue;
+    }
+    
+    
+    // Guess type is attribute: attribute == the attribute of person value
+    // Get random attribute
+    public String getGuessAttribute(String guessAttribute) {
+	   
+		    ArrayList<String> tempAttributes = new ArrayList<String>();		    
+		    for (HashMap.Entry<String, ArrayList<String>> entry : c.attValSet.entrySet()) 
+		        tempAttributes.add(entry.getKey());
+		    
+		    guessAttribute = tempAttributes.get(r.nextInt(tempAttributes.size()));
+		    
+		    return guessAttribute;
+		    
+    }
+   
+   
+
+   // Check which values does the attribute have from the attribute value pair
+   public String getGuessValue(String guessAttribute) {
+	   
+	   String guessValue = null;
+	   
+	   ArrayList<String> tempValues = new ArrayList<String>();
+	   for (HashMap.Entry<String, ArrayList<String>> entry : c.attValSet.entrySet()) {
+	       if (entry.getKey().equals(guessAttribute)) 
+	           tempValues = entry.getValue();
+	   }
+	   
+	   guessValue = tempValues.get(r.nextInt(tempValues.size()));
+	   return guessValue;
+   
+   }
+    
+   
+   public ArrayList<String> updateDeadPersonByFeatures(Guess currGuess) 
+   {
+	   ArrayList<String> deadPerson = new ArrayList<String>();
+	   for (Person person : c.personList) {
+           for (Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
+               if (entry.getKey().equals(currGuess.getAttribute())
+                       && !entry.getValue().equals(currGuess.getValue())) {
+                         deadPerson.add(person.getName());
+               }
+           }
+       }
+	   
+	   return deadPerson;
+   }
+ 
+   
+
+    // Populate deadPerson list with persons who do not have chosen persons attributes
+    public ArrayList<String> updateDeadPersons(Guess currGuess) 
+    {
+    	  ArrayList<String> deadPerson = new ArrayList<String>();
+
+          for (Person person : c.personList) {
+              for (Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
+                  if (entry.getKey().equals(currGuess.getAttribute())
+                          && entry.getValue().equals(currGuess.getValue())) {
+                      deadPerson.add(person.getName());
+                  }
+              }
+          }
+          
+          return deadPerson;
+    	
+    }
+    
+
+    // Kill person in personList who is not the Player's chosen person
+    public void updatePersonList(String deadPerson) 
+    {
+    	 for(int i = 0; i < c.personList.size();i++)
+    	 {
+                 if(c.personList.get(i).getName().equals(deadPerson)){
+                     c.personList.remove(i--);
+                     if (i < 0) 
+                         i = 0;
+                     alivePerson--;
+                 }
+    	 }
+    	 
+    }
+    
 
 } // end of class RandomGuessPlayer
