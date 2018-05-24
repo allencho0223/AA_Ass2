@@ -96,11 +96,21 @@ public class RandomGuessPlayer implements Player {
              */
 
             // Get random attribute
-            guessAttribute = c.attributeList.get(r.nextInt(c.attributeList.size()));
+//            guessAttribute = c.attributeList.get(r.nextInt(c.attributeList.size()));
+            
+            
 
             // Check which values does the attribute have from the attribute value pair
             // instruction
+            ArrayList<String> tempAttributes = new ArrayList<String>();
             ArrayList<String> tempValues = new ArrayList<String>();
+            
+            for (HashMap.Entry<String, ArrayList<String>> entry : c.attValSet.entrySet()) {
+                tempAttributes.add(entry.getKey());
+            }
+            
+            guessAttribute = tempAttributes.get(r.nextInt(tempAttributes.size()));
+            
 
             for (HashMap.Entry<String, ArrayList<String>> entry : c.attValSet.entrySet()) {
                 if (entry.getKey().equals(guessAttribute)) {

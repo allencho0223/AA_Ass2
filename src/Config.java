@@ -2,19 +2,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map.Entry;
 
 public class Config {
 
-    public static String[] ATTRIBUTES = new String[] { "hairLength", "glasses", "facialHair", "eyeColor", "pimples",
-            "hat", "hairColor", "noseShape", "faceShape" };
-
-    public List<String> attributeList = Arrays.asList(ATTRIBUTES);
-
-    public LinkedHashMap<String, ArrayList<String>> attValSet = new LinkedHashMap<String, ArrayList<String>>();
+    public HashMap<String, ArrayList<String>> attValSet = new HashMap<String, ArrayList<String>>();
 
     public ArrayList<Person> personList = new ArrayList<Person>();
 
@@ -74,7 +67,7 @@ public class Config {
                     break;
                 }
 
-                LinkedHashMap<String, String> tempAttValSet = new LinkedHashMap<String, String>();
+                HashMap<String, String> tempAttValSet = new HashMap<String, String>();
 
                 for (int i = 0; i < noOfAttribute; i++) {
                     attVal = valueReader.readLine().split("\\s");
@@ -109,7 +102,7 @@ public class Config {
 
     public ArrayList<String> generateBinaryDecisionTree(ArrayList<Person> personList, int playerNum) {
 
-        LinkedHashMap<String, Integer> binaryAttValHashMap = new LinkedHashMap<String, Integer>();
+        HashMap<String, Integer> binaryAttValHashMap = new HashMap<String, Integer>();
         int attValLine = 2;
         String[] tempAttVal = new String[attValLine];
         ArrayList<String> returnAttVal = new ArrayList<String>();
