@@ -6,14 +6,15 @@ import java.util.HashMap;
 
 public class Config {
 
-	
+    // Declare field (global) variables and objects for use
     public HashMap<String, ArrayList<String>> attValSet = new HashMap<String, ArrayList<String>>();
     public ArrayList<Person> personList = new ArrayList<Person>();
     public int playerNum = 0;
     public int noOfAttribute = 0;
+
     public void configFileLoader(String gameFileName) {
 
-    	//declaring BufferedReader to read the gameFile
+        // declaring BufferedReader to read the gameFile
         BufferedReader configReader = null;
         BufferedReader valueReader = null;
         BufferedReader attributeReader = null;
@@ -26,6 +27,7 @@ public class Config {
             valueReader = new BufferedReader(new FileReader(gameFileName));
             attributeReader = new BufferedReader(new FileReader(gameFileName));
 
+            // Check how many persons exist in the config file
             while ((configData = configReader.readLine()) != null) {
 
                 if (lineNo == configLine * (playerNum + 1)) {
@@ -34,7 +36,7 @@ public class Config {
                 lineNo++;
             }
 
-            //Counting the number of attributes
+            // Counting the number of attributes
             while ((configData = attributeReader.readLine()) != null) {
                 if (configData.isEmpty()) {
                     break;
@@ -54,7 +56,7 @@ public class Config {
                 attValSet.put(tempString[0], valueList);
             }
 
-            // Reading gameFile players from player 1
+            // Read person details (name, attribute - value pair) and store them into Person class 
             while ((configData = valueReader.readLine()) != null) {
 
                 String[] attVal = new String[2];
@@ -75,17 +77,19 @@ public class Config {
                     tempAttValSet.put(attVal[0], attVal[1]);
                 }
 
-                // Create a person to add to the personList, using the name and temporary attribute value sets 
+                // Create a person to add to the personList, 
+                // using the name and temporary attribute value sets
                 Person tempPerson = new Person(name, tempAttValSet);
 
                 personList.add(tempPerson);
 
             }
-
         } catch (IOException ioe) {
             System.err.println(ioe.getLocalizedMessage());
         } finally {
             try {
+                
+                // Close streams after use
                 if (configReader != null) {
                     configReader.close();
                 }
@@ -99,8 +103,7 @@ public class Config {
                 System.err.println(ioe.getLocalizedMessage());
             }
         }
-        
+
     }
 
-
-}//end of config class
+}// end of config class
