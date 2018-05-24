@@ -110,7 +110,7 @@ public class BinaryGuessPlayer implements Player {
         } else {
         	 // add to the deadPersons list those that do match the attribute value pair according to false guess
             //  Remove from the personList those who have the false values
-            ArrayList<String> deadPerson = deadPersonFalseGuess(currGuess);
+            ArrayList<String> deadPerson = deadPersonsFalseGuess(currGuess);
             for (String dead: deadPerson)
                 updatePersonList(dead); 
 
@@ -157,7 +157,7 @@ public class BinaryGuessPlayer implements Player {
     
 
     // If the guess was false, then add values from the deadPerson List that match the att/values of the guessed person
-     public ArrayList<String> deadPersonFalseGuess(Guess currGuess) 
+     public ArrayList<String> deadPersonsFalseGuess(Guess currGuess) 
      {
      	  ArrayList<String> deadPerson = new ArrayList<String>();
 

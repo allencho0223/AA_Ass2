@@ -1,6 +1,3 @@
-import java.io.*;
-
-
 /**
  * Interface of a player in Guess Who game.
  * Your player implementations must directly or indirectly implement this interface.

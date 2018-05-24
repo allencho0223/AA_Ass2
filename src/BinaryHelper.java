@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 // The BinaryHelper Class is used to create helpers that store Attribute and Value strings 
 // This is used in order to help the BinaryGuessPlayer find the most ideal attribute and value pair 
-// to eliminate almost half of the persons each round
+// to eliminate half (or almost half) of the persons each round
 public class BinaryHelper {
     
     private String attribute ="";

@@ -8,16 +8,12 @@ public class Config {
 
 	
     public HashMap<String, ArrayList<String>> attValSet = new HashMap<String, ArrayList<String>>();
-
     public ArrayList<Person> personList = new ArrayList<Person>();
-
     public int playerNum = 0;
-
     public int noOfAttribute = 0;
-
     public void configFileLoader(String gameFileName) {
 
-    	//declaring buffered readers to read the gameFile
+    	//declaring BufferedReader to read the gameFile
         BufferedReader configReader = null;
         BufferedReader valueReader = null;
         BufferedReader attributeReader = null;
@@ -30,7 +26,6 @@ public class Config {
             valueReader = new BufferedReader(new FileReader(gameFileName));
             attributeReader = new BufferedReader(new FileReader(gameFileName));
 
-            // Counting the number of players
             while ((configData = configReader.readLine()) != null) {
 
                 if (lineNo == configLine * (playerNum + 1)) {
@@ -71,16 +66,16 @@ public class Config {
                     break;
                 }
 
-                //Temporary HashMap to store the Strings for the attributes and values from the gameFile
+                // Temporary HashMap to store the Strings for the attributes and values from the gameFile
                 HashMap<String, String> tempAttValSet = new HashMap<String, String>();
 
-                // iterate through the attributes and store the attribute value sets in the HashMap
+                // Iterate through the attributes and store the attribute value sets in the HashMap
                 for (int i = 0; i < noOfAttribute; i++) {
                     attVal = valueReader.readLine().split("\\s");
                     tempAttValSet.put(attVal[0], attVal[1]);
                 }
 
-                //Create a person to add to the personList, using the name and temporary attribute value sets 
+                // Create a person to add to the personList, using the name and temporary attribute value sets 
                 Person tempPerson = new Person(name, tempAttValSet);
 
                 personList.add(tempPerson);

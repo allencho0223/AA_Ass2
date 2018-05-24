@@ -9,8 +9,8 @@ import java.util.Random;
 //Random guessing player. This player is for task B.
 public class RandomGuessPlayer implements Player {
 
-    public Config c = new Config();
-    public Random r = new Random();
+    public Config config = new Config();
+    public Random random = new Random();
     public static int alivePerson = 0;
     public Person chosenPerson;
 
@@ -18,14 +18,14 @@ public class RandomGuessPlayer implements Player {
     // Loads the game configuration from gameFilename, and also store the chosen person.
     public RandomGuessPlayer(String gameFilename, String chosenName) throws IOException {
 
-        c.configFileLoader(gameFilename);
+        config.configFileLoader(gameFilename);
 
-        for (Person person : c.personList) {
+        for (Person person : config.personList) {
             if (person.getName().equals(chosenName)) {
                 chosenPerson = new Person(person.getName(), person.getPersonAttValSet());
             }
         }
-        alivePerson = c.personList.size();
+        alivePerson = config.personList.size();
 
     } // end of RandomGuessPlayer()
     
@@ -46,7 +46,7 @@ public class RandomGuessPlayer implements Player {
         if (alivePerson == 1) 
             guessType = Guess.GuessType.Person;
         else 
-            guessType = guessTypes[r.nextInt(guessTypes.length)];
+            guessType = guessTypes[random.nextInt(guessTypes.length)];
 
        
         // if GuessType Person is randomly chosen:
@@ -80,7 +80,7 @@ public class RandomGuessPlayer implements Player {
             
         } else {
         	
-            for (Entry<String, String> entry : chosenPerson.getPersonAttValSet().entrySet()) {
+            for (HashMap.Entry<String, String> entry : chosenPerson.getPersonAttValSet().entrySet()) {
                 if (currGuess.getAttribute().equals(entry.getKey()) && currGuess.getValue().equals(entry.getValue())) 
                     return true;
             }
@@ -117,7 +117,7 @@ public class RandomGuessPlayer implements Player {
             if (currGuess.getType().equals(Guess.GuessType.Person)) {
 
                 String deadPerson = "";
-                for (Person person : c.personList) {
+                for (Person person : config.personList) {
                     if (person.getName().equals(currGuess.getValue())) {
                         deadPerson = person.getName();
                         break;
@@ -159,11 +159,11 @@ public class RandomGuessPlayer implements Player {
     	guessAttribute = "";
     	
         if (alivePerson == 1) {
-            for (Person person : c.personList) 
+            for (Person person : config.personList) 
                 guessValue = person.getName();
             
         } else 
-            guessValue = c.personList.get(r.nextInt(c.personList.size())).getName();
+            guessValue = config.personList.get(random.nextInt(config.personList.size())).getName();
         
         return guessValue;
     }
@@ -174,10 +174,10 @@ public class RandomGuessPlayer implements Player {
     public String getGuessAttribute(String guessAttribute) {
 	   
 		    ArrayList<String> tempAttributes = new ArrayList<String>();		    
-		    for (HashMap.Entry<String, ArrayList<String>> entry : c.attValSet.entrySet()) 
+		    for (HashMap.Entry<String, ArrayList<String>> entry : config.attValSet.entrySet()) 
 		        tempAttributes.add(entry.getKey());
 		    
-		    guessAttribute = tempAttributes.get(r.nextInt(tempAttributes.size()));
+		    guessAttribute = tempAttributes.get(random.nextInt(tempAttributes.size()));
 		    
 		    return guessAttribute;
 		    
@@ -192,12 +192,12 @@ public class RandomGuessPlayer implements Player {
 	   String guessValue = null;
 	   
 	   ArrayList<String> tempValues = new ArrayList<String>();
-	   for (HashMap.Entry<String, ArrayList<String>> entry : c.attValSet.entrySet()) {
+	   for (HashMap.Entry<String, ArrayList<String>> entry : config.attValSet.entrySet()) {
 	       if (entry.getKey().equals(guessAttribute)) 
 	           tempValues = entry.getValue();
 	   }
 	   
-	   guessValue = tempValues.get(r.nextInt(tempValues.size()));
+	   guessValue = tempValues.get(random.nextInt(tempValues.size()));
 	   return guessValue;
    
    }
@@ -207,12 +207,11 @@ public class RandomGuessPlayer implements Player {
    public ArrayList<String> deadPersonsTrueGuess(Guess currGuess) 
    {
 	   ArrayList<String> deadPerson = new ArrayList<String>();
-	   for (Person person : c.personList) {
+	   for (Person person : config.personList) {
            for (Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
                if (entry.getKey().equals(currGuess.getAttribute())
-                       && !entry.getValue().equals(currGuess.getValue())) {
-                         deadPerson.add(person.getName());
-               }
+                       && !entry.getValue().equals(currGuess.getValue())) 
+                         deadPerson.add(person.getName());    
            }
        }
 	   
@@ -226,7 +225,7 @@ public class RandomGuessPlayer implements Player {
     {
     	  ArrayList<String> deadPerson = new ArrayList<String>();
 
-          for (Person person : c.personList) {
+          for (Person person : config.personList) {
               for (Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
                   if (entry.getKey().equals(currGuess.getAttribute())
                           && entry.getValue().equals(currGuess.getValue())) {
@@ -243,10 +242,10 @@ public class RandomGuessPlayer implements Player {
     // Remove the dead person in personList who is not the Player's chosen person
     public void updatePersonList(String deadPerson) 
     {
-    	 for(int i = 0; i < c.personList.size();i++)
+    	 for(int i = 0; i < config.personList.size();i++)
     	 {
-                 if(c.personList.get(i).getName().equals(deadPerson)){
-                     c.personList.remove(i--);
+                 if(config.personList.get(i).getName().equals(deadPerson)){
+                     config.personList.remove(i--);
                      if (i < 0) 
                          i = 0;
                      alivePerson--;
