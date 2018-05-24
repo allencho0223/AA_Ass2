@@ -96,63 +96,8 @@ public class Config {
                 System.err.println(ioe.getLocalizedMessage());
             }
         }
-        // return persona;
+        
     }
 
-    public ArrayList<String> generateBinaryDecisionTree(ArrayList<Person> personList, int playerNum) {
 
-        HashMap<String, Integer> binaryAttValHashMap = new HashMap<String, Integer>();
-        int attValLine = 2;
-        String[] tempAttVal = new String[attValLine];
-        ArrayList<String> returnAttVal = new ArrayList<String>();
-        
-        System.out.println("alive person number: " + playerNum);
-        for (Person person : personList) {
-            System.out.println("alive person: " + person.getName());
-        }
-        
-        for (int i = 0; i < personList.size(); i++) {
-            for (HashMap.Entry<String, String> entry : personList.get(i).getPersonAttValSet().entrySet()) {
-                tempAttVal[0] = entry.getKey();
-                tempAttVal[1] = entry.getValue();
-                BinaryHelper bh = new BinaryHelper(tempAttVal[0], tempAttVal[1]);
-                
-                if (binaryAttValHashMap.containsKey(bh.toString())) {
-                    binaryAttValHashMap.replace(bh.toString(), binaryAttValHashMap.get(bh.toString()) + 1);
-                } else {
-                    binaryAttValHashMap.put(bh.toString(), 1);
-                }
-            }
-        }
-        
-        for (HashMap.Entry<String, Integer> entry : binaryAttValHashMap.entrySet()) {
-            System.out.println("att-val pair: " + entry.toString());
-            System.out.println("number: " + entry.getValue());
-        }
-        System.out.println("\n\n\n");
-        
-      int idealCount = playerNum / 2;
-      boolean isSetFound = false;
-
-      for (int i = 0; i < playerNum; i++) {
-          for (HashMap.Entry<String, Integer> entry : binaryAttValHashMap.entrySet()) {
-              if (entry.getValue() == idealCount) {
-                  tempAttVal = entry.getKey().split("\\s");
-                  returnAttVal.add(tempAttVal[0]);
-                  returnAttVal.add(tempAttVal[1]);
-                  isSetFound = true;
-                  break;
-              }
-          }
-          if (isSetFound) {
-              break;
-          } else {
-              idealCount--;
-          }
-      }
-      
-      return returnAttVal;
-
-    }
-
-}
+}//end of config class

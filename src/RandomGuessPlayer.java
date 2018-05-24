@@ -4,12 +4,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Random;
 
-/**
- * Random guessing player. This player is for task B.
- *
- * You may implement/extend other interfaces or classes, but ensure ultimately
- * that this class implements the Player interface (directly or indirectly).
- */
+
+//Random guessing player. This player is for task B.
 public class RandomGuessPlayer implements Player {
 
     public Config c = new Config();
@@ -18,7 +14,7 @@ public class RandomGuessPlayer implements Player {
     public Person chosenPerson;
 
     
-    //Loads the game configuration from gameFilename, and also store the chosen
+    // Loads the game configuration from gameFilename, and also store the chosen
     public RandomGuessPlayer(String gameFilename, String chosenName) throws IOException {
 
         c.configFileLoader(gameFilename);
@@ -33,13 +29,14 @@ public class RandomGuessPlayer implements Player {
 
     } // end of RandomGuessPlayer()
     
+ 
     
     
-
     @SuppressWarnings("static-access")
     public Guess guess() {
 
-    	 // Make a guess
+    	System.out.println(" ");
+    	
         String guessAttribute = "";
         String guessValue = "";
         ArrayList<Guess.GuessType> tempGuessType = new ArrayList<Guess.GuessType>();
@@ -79,7 +76,6 @@ public class RandomGuessPlayer implements Player {
     
     
     
-
     // If mType == Person, compare value with chosen person's name. If correct, return yes, else return false
     // If mType == Attribute and value match the chosen persona's, return true, else return false
     public boolean answer(Guess currGuess) {
@@ -109,9 +105,10 @@ public class RandomGuessPlayer implements Player {
         // If the answer is true, 
         if (answer) {
 
-        	// Remove personList who don't have guessed value
+        	//else add to the deadPersons list those that do not match the attribute value pair according to true guess
+            //update the personList for next round
             if (currGuess.getType().equals(Guess.GuessType.Attribute)) {
-                ArrayList<String> deadPersons = updateDeadPersonByFeatures(currGuess); 
+                ArrayList<String> deadPersons = deadPersonsTrueGuess(currGuess); 
                 for (String dead: deadPersons)
                 updatePersonList(dead); 
                 return false;
@@ -140,7 +137,7 @@ public class RandomGuessPlayer implements Player {
                 // Remove the personList who don't have the value
             } else {
 
-                ArrayList<String> deadPerson = updateDeadPersons(currGuess); 
+                ArrayList<String> deadPerson = deadPersonsFalseGuess(currGuess); 
                 for (String dead: deadPerson)
                 updatePersonList(dead); 
              
@@ -150,6 +147,14 @@ public class RandomGuessPlayer implements Player {
     } // end of receiveAnswer()
     
     
+    //end of implemented Player Methods
+    
+    
+    
+    
+    
+    
+    //start of Helper methods:
     
     
     //  If guess type is person: attribute == "" value == person's name
@@ -202,7 +207,7 @@ public class RandomGuessPlayer implements Player {
    }
     
    
-   public ArrayList<String> updateDeadPersonByFeatures(Guess currGuess) 
+   public ArrayList<String> deadPersonsTrueGuess(Guess currGuess) 
    {
 	   ArrayList<String> deadPerson = new ArrayList<String>();
 	   for (Person person : c.personList) {
@@ -220,7 +225,7 @@ public class RandomGuessPlayer implements Player {
    
 
     // Populate deadPerson list with persons who do not have chosen persons attributes
-    public ArrayList<String> updateDeadPersons(Guess currGuess) 
+    public ArrayList<String> deadPersonsFalseGuess(Guess currGuess) 
     {
     	  ArrayList<String> deadPerson = new ArrayList<String>();
 
