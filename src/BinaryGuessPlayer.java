@@ -1,7 +1,8 @@
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Random;
 
 /**
  * Binary-search based guessing player. This player is for task C.
@@ -117,7 +118,7 @@ public class BinaryGuessPlayer implements Player {
                 // Remove personList who don't have guessed value
                 if (currGuess.getType().equals(Guess.GuessType.Attribute)) {
                     for (Person person : c.personList) {
-                        for (Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
+                        for (HashMap.Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
                             if (entry.getKey().equals(currGuess.getAttribute())
                                     && !entry.getValue().equals(currGuess.getValue())) {
                                 deadPerson.add(person.getName());
@@ -149,7 +150,7 @@ public class BinaryGuessPlayer implements Player {
             ArrayList<String> deadPerson = new ArrayList<String>();
 
             for (Person person : c.personList) {
-                for (Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
+                for (HashMap.Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
                     if (entry.getKey().equals(currGuess.getAttribute())
                             && entry.getValue().equals(currGuess.getValue())) {
                         deadPerson.add(person.getName());

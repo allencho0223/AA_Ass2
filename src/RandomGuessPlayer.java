@@ -96,10 +96,6 @@ public class RandomGuessPlayer implements Player {
              */
 
             // Get random attribute
-//            guessAttribute = c.attributeList.get(r.nextInt(c.attributeList.size()));
-            
-            
-
             // Check which values does the attribute have from the attribute value pair
             // instruction
             ArrayList<String> tempAttributes = new ArrayList<String>();
@@ -144,7 +140,7 @@ public class RandomGuessPlayer implements Player {
         } else {
 
             // If guessed attribute and value match the chosen persona's, return true
-            for (Entry<String, String> entry : chosenPerson.getPersonAttValSet().entrySet()) {
+            for (HashMap.Entry<String, String> entry : chosenPerson.getPersonAttValSet().entrySet()) {
                 if (currGuess.getAttribute().equals(entry.getKey()) && currGuess.getValue().equals(entry.getValue())) {
                     return true;
                 }
@@ -175,7 +171,7 @@ public class RandomGuessPlayer implements Player {
             // Remove personList who don't have guessed value
             if (currGuess.getType().equals(Guess.GuessType.Attribute)) {
                 for (Person person : c.personList) {
-                    for (Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
+                    for (HashMap.Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
                         if (entry.getKey().equals(currGuess.getAttribute())
                                 && !entry.getValue().equals(currGuess.getValue())) {
                             deadPerson.add(person.getName());
@@ -236,7 +232,7 @@ public class RandomGuessPlayer implements Player {
                 ArrayList<String> deadPerson = new ArrayList<String>();
 
                 for (Person person : c.personList) {
-                    for (Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
+                    for (HashMap.Entry<String, String> entry : person.getPersonAttValSet().entrySet()) {
                         if (entry.getKey().equals(currGuess.getAttribute())
                                 && entry.getValue().equals(currGuess.getValue())) {
                             deadPerson.add(person.getName());

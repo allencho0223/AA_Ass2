@@ -3,7 +3,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map.Entry;
 
 public class Config {
 
@@ -113,7 +112,7 @@ public class Config {
         }
         
         for (int i = 0; i < personList.size(); i++) {
-            for (Entry<String, String> entry : personList.get(i).getPersonAttValSet().entrySet()) {
+            for (HashMap.Entry<String, String> entry : personList.get(i).getPersonAttValSet().entrySet()) {
                 tempAttVal[0] = entry.getKey();
                 tempAttVal[1] = entry.getValue();
                 BinaryHelper bh = new BinaryHelper(tempAttVal[0], tempAttVal[1]);
@@ -126,7 +125,7 @@ public class Config {
             }
         }
         
-        for (Entry<String, Integer> entry : binaryAttValHashMap.entrySet()) {
+        for (HashMap.Entry<String, Integer> entry : binaryAttValHashMap.entrySet()) {
             System.out.println("att-val pair: " + entry.toString());
             System.out.println("number: " + entry.getValue());
         }
@@ -136,7 +135,7 @@ public class Config {
       boolean isSetFound = false;
 
       for (int i = 0; i < playerNum; i++) {
-          for (Entry<String, Integer> entry : binaryAttValHashMap.entrySet()) {
+          for (HashMap.Entry<String, Integer> entry : binaryAttValHashMap.entrySet()) {
               if (entry.getValue() == idealCount) {
                   tempAttVal = entry.getKey().split("\\s");
                   returnAttVal.add(tempAttVal[0]);
